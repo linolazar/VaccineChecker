@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Table from './table';
 import AvailablityApi from '../api/availablityapi';
 import { Center } from '../types/type';
-import getDate from '../helpers/utils';
+import { getDate } from '../helpers/utils';
 import DistrictDropDown from './dropdown';
 import Immutable from "immutable";
 import Copyright from './copyright';
@@ -15,14 +15,19 @@ const App = () => {
   useEffect(() => {
     if (district > 0) {
       AvailablityApi.AvailablityCheck(district, getDate()).then((response: any) =>
-        setAvailablity(response.data.centers),
-        setVisiblity(true))
+      setAvailablity(response.data.centers))
+      setInterval(() => {
+        AvailablityApi.AvailablityCheck(district, getDate()).then((response: any) =>
+          setAvailablity(response.data.centers))
+      }, 120000)
+      setVisiblity(true)
     }
   }, [district])
 
   const setSelectedDistrict = (districtId: number) => {
     setDistrict(districtId);
   };
+
   return (<div className="container">
     <h1>Vaccine Availablity Checker</h1>
     <DistrictDropDown district={district} setDistrict={setSelectedDistrict} />

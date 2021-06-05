@@ -14,9 +14,8 @@ import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { Center, Session, Slot, VaccineFees } from '../types/type';
-import data from '../data.json'
+import { RemoveDuplicateNumbers, RemoveDuplicateString } from '../helpers/utils';
 
-var vaccines: string[];
 const useRowStyles = makeStyles({
   root: {
     '& > *': {
@@ -67,14 +66,14 @@ const Slots = (props: SectionProps) => {
       <TableRow key={props.sessions[0].session_id}>
         {
           props.sessions.map((session: Session) => {
-            return <div>
-              <TableCell component="th" scope="row">{session.vaccine}</TableCell>
-              {
-                session.slots.map((slot: Slot) => {
-                  return <TableCell align="center">{slot}</TableCell>
-                })
-              }
-            </div>
+              return <div>
+                <TableCell component="th" scope="row">{session.vaccine + " Age-" +  session.min_age_limit}</TableCell>
+                {
+                  session.slots.map((slot: Slot) => {
+                    return <TableCell align="center">{slot}</TableCell>
+                  })
+                }
+              </div>
           })
         }
       </TableRow>
@@ -111,15 +110,17 @@ const SessionComponent = (props: SectionProps) => {
   let availableSecondDose = 0;
   props.sessions.map((x: Session) => availableFirstDose += x.available_capacity_dose1)
   props.sessions.map((x: Session) => availableSecondDose += x.available_capacity_dose2)
-  let AgeLimit = props.sessions.map((x: Session) => { return x.min_age_limit; })
-  vaccines = props.sessions.map((x: Session) => { return x.vaccine; })
+  let Ages = props.sessions.map((x: Session) => { return x.min_age_limit; })
+  let vaccines = props.sessions.map((x: Session) => { return x.vaccine; })
   let firstDoseText = availableFirstDose > 0 ? availableFirstDose : ""
   let secondDoseText = availableSecondDose > 0 ? availableSecondDose : ""
   let style = props.feeType === "Paid" ? { color: 'red' } : {}
-  return <>
+  let FilteredVaccine = RemoveDuplicateString(vaccines)
+  let filteredAges = RemoveDuplicateNumbers(Ages)
 
-    <Age ages={AgeLimit} />
-    <Vaccine vaccines={vaccines} />
+  return <>
+    <Age ages={filteredAges} />
+    <Vaccine vaccines={FilteredVaccine} />
     <StyledTableCell align="center">{firstDoseText}</StyledTableCell>
     <StyledTableCell align="center">{secondDoseText}</StyledTableCell>
     <StyledTableCell align="center" style={style}>{props.feeType}</StyledTableCell>

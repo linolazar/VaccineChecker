@@ -5,4 +5,15 @@ export const getDate = () => {
     var yyyy = today.getFullYear();
     return  dd + '-' + mm + '-' + yyyy;
 };
-export default getDate;
+
+export const RemoveDuplicateString = (item: string[]) => {
+    return item.filter(function(x: string, pos: number) {
+        return item.indexOf(x) === pos;
+    })
+}
+
+export const RemoveDuplicateNumbers = (item: number[]) => {
+    return item.filter(function(x: number, pos: number) {
+        return item.indexOf(x) === pos;
+    })
+}

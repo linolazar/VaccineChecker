@@ -15,12 +15,12 @@ const App = () => {
   useEffect(() => {
     if (district > 0) {
       AvailablityApi.AvailablityCheck(district, getDate()).then((response: any) =>
-      setAvailablity(response.data.centers))
-      setInterval(() => {
-        AvailablityApi.AvailablityCheck(district, getDate()).then((response: any) =>
-          setAvailablity(response.data.centers))
-      }, 120000)
-      setVisiblity(true)
+        setAvailablity(response.data.centers))
+        setVisiblity(true)
+      // setInterval(() => {
+      //   AvailablityApi.AvailablityCheck(district, getDate()).then((response: any) =>
+      //     setAvailablity(response.data.centers))
+      // }, 120000)
     }
   }, [district])
 

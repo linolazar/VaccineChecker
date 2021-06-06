@@ -112,8 +112,8 @@ const SessionComponent = (props: SectionProps) => {
   props.sessions.map((x: Session) => availableSecondDose += x.available_capacity_dose2)
   let Ages = props.sessions.map((x: Session) => { return x.min_age_limit; })
   let vaccines = props.sessions.map((x: Session) => { return x.vaccine; })
-  let firstDoseText = availableFirstDose > 0 ? availableFirstDose : "NA"
-  let secondDoseText = availableSecondDose > 0 ? availableSecondDose : "NA"
+  let firstDoseText = availableFirstDose > 0 ? availableFirstDose : "0"
+  let secondDoseText = availableSecondDose > 0 ? availableSecondDose : "0"
   let style = props.feeType === "Paid" ? { color: 'red' } : {}
   let FilteredVaccine = RemoveDuplicateString(vaccines)
   let filteredAges = RemoveDuplicateNumbers(Ages)

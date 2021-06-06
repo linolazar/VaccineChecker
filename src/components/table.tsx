@@ -215,7 +215,7 @@ const BookButton: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
       isVisible ?
         <Button variant="contained" color="primary" href="https://selfregistration.cowin.gov.in/">
           Book
-      </Button> : <>FALSE</>
+      </Button> : <></>
     }
   </Typography>
 }

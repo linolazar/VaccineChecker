@@ -112,17 +112,17 @@ const SessionComponent = (props: SectionProps) => {
   props.sessions.map((x: Session) => availableSecondDose += x.available_capacity_dose2)
   let Ages = props.sessions.map((x: Session) => { return x.min_age_limit; })
   let vaccines = props.sessions.map((x: Session) => { return x.vaccine; })
-  let firstDoseText = availableFirstDose > 0 ? availableFirstDose : ""
-  let secondDoseText = availableSecondDose > 0 ? availableSecondDose : ""
+  let firstDoseText = availableFirstDose > 0 ? availableFirstDose : "NA"
+  let secondDoseText = availableSecondDose > 0 ? availableSecondDose : "NA"
   let style = props.feeType === "Paid" ? { color: 'red' } : {}
   let FilteredVaccine = RemoveDuplicateString(vaccines)
   let filteredAges = RemoveDuplicateNumbers(Ages)
 
   return <>
     <Age ages={filteredAges} />
-    <Vaccine vaccines={FilteredVaccine} />
     <StyledTableCell align="center">{firstDoseText}</StyledTableCell>
     <StyledTableCell align="center">{secondDoseText}</StyledTableCell>
+    <Vaccine vaccines={FilteredVaccine} />
     <StyledTableCell align="center" style={style}>{props.feeType}</StyledTableCell>
   </>
 }
@@ -197,9 +197,9 @@ const CollapsibleTable = (props: TableProps) => {
             <TableCell />
             <TableCell style={{ fontWeight: 'bolder' }}>Center Name</TableCell>
             <TableCell align="center" style={{ fontWeight: 'bolder' }}>Age</TableCell>
-            <TableCell align="center" style={{ fontWeight: 'bolder' }}>Vaccine</TableCell>
             <TableCell align="center" style={{ fontWeight: 'bolder' }}>Available First Dose</TableCell>
             <TableCell align="center" style={{ fontWeight: 'bolder' }}>Available Second Dose </TableCell>
+            <TableCell align="center" style={{ fontWeight: 'bolder' }}>Vaccine</TableCell>
             <TableCell align="center" style={{ fontWeight: 'bolder' }}>Type</TableCell>
           </TableRow>
         </TableHead>

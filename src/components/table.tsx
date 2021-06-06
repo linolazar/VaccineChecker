@@ -1,8 +1,9 @@
-import React from 'react';
-import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core/styles';
+import { Button } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
+import Paper from '@material-ui/core/Paper';
+import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -10,12 +11,13 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import { Center, Session, Slot, VaccineFees } from '../types/type';
+import React from 'react';
 import { RemoveDuplicateNumbers, RemoveDuplicateString } from '../helpers/utils';
+import { Center, Session, Slot } from '../types/type';
 
+var isVaccineAvailable: boolean = false;
 const useRowStyles = makeStyles({
   root: {
     '& > *': {
@@ -66,14 +68,14 @@ const Slots = (props: SectionProps) => {
       <TableRow key={props.sessions[0].session_id}>
         {
           props.sessions.map((session: Session) => {
-              return <div>
-                <TableCell component="th" scope="row">{session.vaccine + " Age-" +  session.min_age_limit}</TableCell>
-                {
-                  session.slots.map((slot: Slot) => {
-                    return <TableCell align="center">{slot}</TableCell>
-                  })
-                }
-              </div>
+            return <div>
+              <TableCell component="th" scope="row">{session.vaccine + " Age-" + session.min_age_limit}</TableCell>
+              {
+                session.slots.map((slot: Slot) => {
+                  return <TableCell align="center">{slot}</TableCell>
+                })
+              }
+            </div>
           })
         }
       </TableRow>
@@ -117,13 +119,22 @@ const SessionComponent = (props: SectionProps) => {
   let style = props.feeType === "Paid" ? { color: 'red' } : {}
   let FilteredVaccine = RemoveDuplicateString(vaccines)
   let filteredAges = RemoveDuplicateNumbers(Ages)
+  isVaccineAvailable = (availableFirstDose + availableSecondDose) > 0;
 
   return <>
     <Age ages={filteredAges} />
-    <StyledTableCell align="center">{firstDoseText}</StyledTableCell>
-    <StyledTableCell align="center">{secondDoseText}</StyledTableCell>
+    <StyledTableCell align="center" size="small">{firstDoseText}</StyledTableCell>
+    <StyledTableCell align="center" size="small">{secondDoseText}</StyledTableCell>
     <Vaccine vaccines={FilteredVaccine} />
     <StyledTableCell align="center" style={style}>{props.feeType}</StyledTableCell>
+    <TableCell align="center">
+      {
+        isVaccineAvailable ?
+          <Button variant="contained" color="primary" href="https://selfregistration.cowin.gov.in/">
+            Book
+      </Button> : <></>
+      }
+    </TableCell>
   </>
 }
 
@@ -131,6 +142,11 @@ const Row = (prop: RowProps) => {
   const { center } = prop;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
+  let availableFirstDose = 0;
+  let availableSecondDose = 0;
+  center.sessions.map((x: Session) => availableFirstDose += x.available_capacity_dose1)
+  center.sessions.map((x: Session) => availableSecondDose += x.available_capacity_dose2)
+  isVaccineAvailable = (availableFirstDose + availableSecondDose) > 0;
 
   return (<React.Fragment>
     <StyledTableRow className={classes.root}>
@@ -146,43 +162,71 @@ const Row = (prop: RowProps) => {
       <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box margin={1}>
-            <Typography variant="h5" gutterBottom component="div">
-              Location Details
-              </Typography>
-            <Typography variant="subtitle1" gutterBottom component="span">
-              {
-                center.address + ", " +
-                center.district_name + " District, " +
-                center.block_name + " Block, " +
-                center.pincode
-              }
-            </Typography>
-            <Typography variant="h5" gutterBottom component="div">
-              Available time slots
-              </Typography>
-            <Slots sessions={center.sessions} />
-            {
-              center.vaccine_fees ?
-                [
-                  <Typography variant="h5" gutterBottom component="div">
-                    Vaccine Price
-            </Typography>,
-                  center.vaccine_fees.map((vaccine: any) => {
-                    return <div>
-                      <Typography variant="subtitle1" gutterBottom component="span">
-                        {vaccine.vaccine + " - " + vaccine.fee}
-                      </Typography>
-                    </div>
-                  })
-                ]
-                : <></>
-            }
+            <AddressDetails center={center} />
+            <BookButton isVisible={isVaccineAvailable} />
+            <VaccinePrice center={center} />
+            <AvailableTimeSlot center={center} />
           </Box>
         </Collapse>
       </StyledTableCell>
     </StyledTableRow>
   </React.Fragment>
   );
+}
+
+const AddressDetails: React.FC<{ center: Center }> = ({ center }) => {
+  return <>
+    <Typography variant="h5" gutterBottom component="div">
+      Location Details
+              </Typography>
+    <Typography variant="subtitle1" gutterBottom component="span">
+      {
+        center.address + ", " +
+        center.district_name + " District, " +
+        center.block_name + " Block, " +
+        center.pincode
+      }
+    </Typography>
+  </>
+}
+
+const VaccinePrice: React.FC<{ center: Center }> = ({ center }) => {
+  return center.vaccine_fees ?
+    <>
+      <Typography variant="h5" gutterBottom component="div">
+        Vaccine Price
+  </Typography>
+      {
+        center.vaccine_fees.map((vaccine: any) => {
+          return <div>
+            <Typography variant="subtitle1" gutterBottom component="span">
+              {vaccine.vaccine + " - " + vaccine.fee}
+            </Typography>
+          </div>
+        })
+      }
+    </>
+    : <></>
+}
+
+const BookButton: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
+  return <Typography align="left">
+    {
+      isVisible ?
+        <Button variant="contained" color="primary" href="https://selfregistration.cowin.gov.in/">
+          Book
+      </Button> : <>FALSE</>
+    }
+  </Typography>
+}
+
+const AvailableTimeSlot: React.FC<{ center: Center }> = ({ center }) => {
+  return <>
+    <Typography variant="h5" gutterBottom component="div">
+      Available time slots
+  </Typography>
+    <Slots sessions={center.sessions} />
+  </>
 }
 
 interface TableProps {
@@ -201,6 +245,7 @@ const CollapsibleTable = (props: TableProps) => {
             <TableCell align="center" style={{ fontWeight: 'bolder' }}>Available Second Dose </TableCell>
             <TableCell align="center" style={{ fontWeight: 'bolder' }}>Vaccine</TableCell>
             <TableCell align="center" style={{ fontWeight: 'bolder' }}>Type</TableCell>
+            <TableCell align="center" style={{ fontWeight: 'bolder' }}></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

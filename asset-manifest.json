@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/VaccineChecker/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/VaccineChecker/static/js/main.4741b1cd.chunk.js",
-    "main.js.map": "/VaccineChecker/static/js/main.4741b1cd.chunk.js.map",
+    "main.js": "/VaccineChecker/static/js/main.d855606f.chunk.js",
+    "main.js.map": "/VaccineChecker/static/js/main.d855606f.chunk.js.map",
     "runtime-main.js": "/VaccineChecker/static/js/runtime-main.f91bcd8a.js",
     "runtime-main.js.map": "/VaccineChecker/static/js/runtime-main.f91bcd8a.js.map",
     "static/js/2.ef08edbc.chunk.js": "/VaccineChecker/static/js/2.ef08edbc.chunk.js",
@@ -15,6 +15,6 @@
     "static/js/runtime-main.f91bcd8a.js",
     "static/js/2.ef08edbc.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.4741b1cd.chunk.js"
+    "static/js/main.d855606f.chunk.js"
   ]
 }
